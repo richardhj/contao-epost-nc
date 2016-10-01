@@ -1,0 +1,34 @@
+{
+  "name": "richardhj/contao-epost-nc",
+  "description": "Notification Center components for the E-POSTBUSINESS API integration for Contao Open Source CMS",
+  "type": "contao-module",
+  "authors": [
+    {
+      "name": "Richard Henkenjohann",
+      "email": "richard@henkenjohann.me",
+      "homepage": "http://henkenjohann.me",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "richard@henkenjohann.me"
+  },
+  "require": {
+    "php": "^5.4 || ^7.0",
+    "richardhj/contao-epost-core": "*",
+    "discordier/justtextwidgets": "~1.0",
+    "terminal42/notification_center": "~1.3"
+  },
+  "autoload": {
+    "psr-0": {
+      "NotificationCenter\\": "src/"
+    }
+  },
+  "extra": {
+    "contao": {
+      "sources": {
+        "module": "system/modules/epost-nc"
+      }
+    }
+  }
+}
