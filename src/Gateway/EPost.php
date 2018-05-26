@@ -38,12 +38,6 @@ class EPost extends Base implements GatewayInterface, MessageDraftFactoryInterfa
 {
 
     /**
-     * The gateway model
-     * @var Gateway|\Model
-     */
-    protected $objModel;
-
-    /**
      * Returns a MessageDraft
      *
      * @param   Message|\Model $message
@@ -167,13 +161,11 @@ class EPost extends Base implements GatewayInterface, MessageDraftFactoryInterfa
             $errorInformation = \GuzzleHttp\json_decode($e->getResponse()->getBody());
 
             // Import database just for getParentEntries()
-            /** @noinspection PhpUndefinedMethodInspection */
             $this->import('Database');
 
-            /** @noinspection PhpUndefinedMethodInspection */
             $errorDescription = sprintf(
                 'The E-POST letter%s could not be sent due following error(s): <ol><li>%s</li></ol>',
-                $this->getParentEntries(Language::getTable(), $draft->getLanguageId()),
+                $this->getParentEntries('tl_nc_language', $draft->getLanguageId()),
                 implode(
                     '</li> <li>',
                     array_map(

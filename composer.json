@@ -15,7 +15,7 @@
   },
   "require": {
     "php": "^7.1",
-    "richardhj/contao-epost-core": "dev-master",
+    "richardhj/contao-epost-core": "^1.0@alpha",
     "contao/core-bundle": "^4.4",
     "discordier/justtextwidgets": "~1.0",
     "contao/manager-plugin": "^2.2",
@@ -29,6 +29,6 @@
     }
   },
   "extra": {
-    "contao": "Richardhj\\ContaoEPostNotificationCenterBundle\\ContaoManager\\Plugin"
+    "contao-manager-plugin": "Richardhj\\ContaoEPostNotificationCenterBundle\\ContaoManager\\Plugin"
   }
 }

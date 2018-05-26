@@ -33,7 +33,8 @@ class Plugin implements BundlePluginInterface
                 ->setLoadAfter(
                     [
                         ContaoCoreBundle::class,
-                        RichardhjContaoEPostCoreBundle::class
+                        RichardhjContaoEPostCoreBundle::class,
+                        'notification_center'
                     ]
                 ),
         ];
