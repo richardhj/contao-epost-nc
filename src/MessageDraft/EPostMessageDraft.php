@@ -1,20 +1,26 @@
 <?php
+
 /**
- * Clockwork SMS gateway for the notification_center extension for Contao Open Source CMS
+ * This file is part of richardhj/contao-epost-nc.
  *
- * Copyright (c) 2016 Richard Henkenjohann
+ * Copyright (c) 2015-2018 Richard Henkenjohann
  *
- * @package NotificationCenterClockworkSMS
- * @author  Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @package   richardhj/contao-epost-nc
+ * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @copyright 2015-2018 Richard Henkenjohann
+ * @license   https://github.com/richardhj/contao-epost-nc/blob/master/LICENSE
  */
 
-namespace NotificationCenter\MessageDraft;
+namespace Richardhj\ContaoEPostNotificationCenterBundle\MessageDraft;
 
-use EPost\Api\Metadata\DeliveryOptions;
-use EPost\Api\Metadata\Envelope;
+use Contao\FilesModel;
+use NotificationCenter\MessageDraft\MessageDraftInterface;
 use NotificationCenter\Model\Language;
 use NotificationCenter\Model\Message;
 use NotificationCenter\Util\StringUtil;
+use Richardhj\EPost\Api\Metadata\DeliveryOptions;
+use Richardhj\EPost\Api\Metadata\Envelope;
+use Richardhj\EPost\Api\Metadata\Envelope\AbstractRecipient;
 
 
 /**
@@ -28,57 +34,52 @@ class EPostMessageDraft implements MessageDraftInterface
      * Message
      * @var Message|\Model
      */
-    protected $objMessage;
-
+    private $message;
 
     /**
      * Language
      * @var Language|\Model
      */
-    protected $objLanguage;
-
+    private $language;
 
     /**
      * Tokens
      * @var array
      */
-    protected $arrTokens = [];
-
+    private $tokens = [];
 
     /**
      * Construct the object
      *
-     * @param Message  $objMessage
-     * @param Language $objLanguage
-     * @param          $arrTokens
+     * @param Message  $message
+     * @param Language $language
+     * @param          $tokens
      */
-    public function __construct(Message $objMessage, Language $objLanguage, $arrTokens)
+    public function __construct(Message $message, Language $language, $tokens)
     {
-        $this->arrTokens = $arrTokens;
-        $this->objLanguage = $objLanguage;
-        $this->objMessage = $objMessage;
+        $this->tokens   = $tokens;
+        $this->language = $language;
+        $this->message  = $message;
     }
-
 
     /**
      * Get the cover letter mode (whether the cover letter is included or should be generated)
      *
      * @return string
      */
-    public function getCoverLetterMode()
+    public function getCoverLetterMode(): string
     {
-        return $this->objLanguage->epost_cover_letter_mode;
+        return $this->language->epost_cover_letter_mode;
     }
-
 
     /**
      * Get the recipient
      *
-     * @return Envelope\AbstractRecipient
+     * @return AbstractRecipient
      */
     public function getRecipient()
     {
-        $fields = deserialize($this->objLanguage->epost_recipient_fields);
+        $fields = deserialize($this->language->epost_recipient_fields);
 
         switch ($this->getMessage()->epost_letter_type) {
             case Envelope::LETTER_TYPE_NORMAL:
@@ -94,11 +95,11 @@ class EPostMessageDraft implements MessageDraftInterface
         }
 
         // Set each property
-        foreach ($fields as $field) {
+        foreach ((array) $fields as $field) {
             try {
                 $recipient->{$field['recipient_field']} = StringUtil::recursiveReplaceTokensAndTags(
                     $field['recipient_value'],
-                    $this->arrTokens,
+                    $this->tokens,
                     StringUtil::NO_TAGS | StringUtil::NO_BREAKS
                 );
             } catch (\InvalidArgumentException $e) {
@@ -108,32 +109,30 @@ class EPostMessageDraft implements MessageDraftInterface
         return $recipient;
     }
 
-
     /**
      * Get the subject
      *
      * @return string
      */
-    public function getSubject()
+    public function getSubject(): string
     {
         return (DeliveryOptions::OPTION_COVER_LETTER_GENERATE === $this->getCoverLetterMode())
-            ? $this->objLanguage->epost_subject
+            ? $this->language->epost_subject
             : '';
     }
-
 
     /**
      * Get the cover letter (html formatted)
      *
      * @return string
      */
-    public function getCoverLetter()
+    public function getCoverLetter(): string
     {
         if (DeliveryOptions::OPTION_COVER_LETTER_INCLUDED) {
             return '';
         }
 
-        $buffer = StringUtil::recursiveReplaceTokensAndTags($this->objLanguage->epost_cover_letter, $this->arrTokens);
+        $buffer = StringUtil::recursiveReplaceTokensAndTags($this->language->epost_cover_letter, $this->tokens);
 
         $search = array
         (
@@ -153,7 +152,6 @@ class EPostMessageDraft implements MessageDraftInterface
         return $buffer;
     }
 
-
     /**
      * Returns the paths to attachments as an array
      *
@@ -162,13 +160,13 @@ class EPostMessageDraft implements MessageDraftInterface
     public function getAttachments()
     {
         // Token attachments
-        $attachments = StringUtil::getTokenAttachments($this->objLanguage->attachment_tokens, $this->arrTokens);
+        $attachments = StringUtil::getTokenAttachments($this->language->attachment_tokens, $this->tokens);
 
         // Add static attachments
-        $staticAttachments = deserialize($this->objLanguage->attachments, true);
+        $staticAttachments = deserialize($this->language->attachments, true);
 
         if (!empty($staticAttachments)) {
-            $files = \FilesModel::findMultipleByUuids($staticAttachments);
+            $files = FilesModel::findMultipleByUuids($staticAttachments);
 
             if (null === $files) {
                 return $attachments;
@@ -182,36 +180,32 @@ class EPostMessageDraft implements MessageDraftInterface
         return $attachments;
     }
 
-
     public function getLanguageId()
     {
-        return $this->objLanguage->id;
+        return $this->language->id;
     }
-
 
     /**
      * {@inheritdoc}
      */
     public function getTokens()
     {
-        return $this->arrTokens;
+        return $this->tokens;
     }
-
 
     /**
      * {@inheritdoc}
      */
     public function getMessage()
     {
-        return $this->objMessage;
+        return $this->message;
     }
-
 
     /**
      * {@inheritdoc}
      */
     public function getLanguage()
     {
-        return $this->objLanguage->language;
+        return $this->language->language;
     }
 }

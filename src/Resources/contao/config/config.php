@@ -1,16 +1,23 @@
 <?php
+
 /**
- * E-POSTBUSINESS API integration for Contao Open Source CMS
- * Copyright (c) 2015-2016 Richard Henkenjohann
- * @package E-POST
- * @author  Richard Henkenjohann <richard-epost@henkenjohann.me>
+ * This file is part of richardhj/contao-epost-nc.
+ *
+ * Copyright (c) 2015-2018 Richard Henkenjohann
+ *
+ * @package   richardhj/contao-epost-nc
+ * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @copyright 2015-2018 Richard Henkenjohann
+ * @license   https://github.com/richardhj/contao-epost-nc/blob/master/LICENSE
  */
+
+use Richardhj\ContaoEPostNotificationCenterBundle\Gateway\EPost;
 
 
 /**
  * Notification Center Gateways
  */
-$GLOBALS['NOTIFICATION_CENTER']['GATEWAY']['epost'] = 'NotificationCenter\Gateway\EPost';
+$GLOBALS['NOTIFICATION_CENTER']['GATEWAY']['epost'] = EPost::class;
 
 
 /**

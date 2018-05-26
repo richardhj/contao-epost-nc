@@ -1,25 +1,24 @@
 <?php
+
 /**
- * Clockwork SMS gateway for the notification_center extension for Contao Open Source CMS
+ * This file is part of richardhj/contao-epost-nc.
  *
- * Copyright (c) 2016 Richard Henkenjohann
+ * Copyright (c) 2015-2018 Richard Henkenjohann
  *
- * @package NotificationCenterClockworkSMS
- * @author  Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @package   richardhj/contao-epost-nc
+ * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @copyright 2015-2018 Richard Henkenjohann
+ * @license   https://github.com/richardhj/contao-epost-nc/blob/master/LICENSE
  */
-use EPost\Api\Metadata\DeliveryOptions;
-use EPost\Api\Metadata\Envelope;
-use NotificationCenter\Util\EPostHelper;
 
-
-/** @noinspection PhpUndefinedMethodInspection */
-$table = NotificationCenter\Model\Message::getTable();
+use Richardhj\EPost\Api\Metadata\DeliveryOptions;
+use Richardhj\EPost\Api\Metadata\Envelope;
 
 
 /**
  * MetaPalettes
  */
-$GLOBALS['TL_DCA'][$table]['metapalettes']['epost'] = [
+$GLOBALS['TL_DCA']['tl_nc_message']['metapalettes']['epost'] = [
     'title'     => [
         'title',
         'gateway',
@@ -40,7 +39,7 @@ $GLOBALS['TL_DCA'][$table]['metapalettes']['epost'] = [
 /**
  * MetaSubSelectPalettes
  */
-$GLOBALS['TL_DCA'][$table]['metasubselectpalettes'] = [
+$GLOBALS['TL_DCA']['tl_nc_message']['metasubselectpalettes'] = [
     'epost_letter_type'       => [
         Envelope::LETTER_TYPE_NORMAL => [],
         Envelope::LETTER_TYPE_HYBRID => [
@@ -62,8 +61,8 @@ $GLOBALS['TL_DCA'][$table]['metasubselectpalettes'] = [
 /**
  * Fields
  */
-$GLOBALS['TL_DCA'][$table]['fields']['epost_letter_type'] = [
-    'label'            => &$GLOBALS['TL_LANG'][$table]['epost_letter_type'],
+$GLOBALS['TL_DCA']['tl_nc_message']['fields']['epost_letter_type'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_nc_message']['epost_letter_type'],
     'exclude'          => true,
     'inputType'        => 'radio',
     'options_callback' => function () {
@@ -78,8 +77,8 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_letter_type'] = [
     'sql'              => "varchar(64) NOT NULL default ''",
 ];
 
-$GLOBALS['TL_DCA'][$table]['fields']['epost_registered'] = [
-    'label'            => &$GLOBALS['TL_LANG'][$table]['epost_registered'],
+$GLOBALS['TL_DCA']['tl_nc_message']['fields']['epost_registered'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_nc_message']['epost_registered'],
     'exclude'          => true,
     'inputType'        => 'select',
     'options_callback' => function () {
@@ -94,14 +93,14 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_registered'] = [
     'sql'              => "varchar(64) NOT NULL default ''",
 ];
 
-$GLOBALS['TL_DCA'][$table]['fields']['epost_color'] = [
-    'label'            => &$GLOBALS['TL_LANG'][$table]['epost_color'],
+$GLOBALS['TL_DCA']['tl_nc_message']['fields']['epost_color'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_nc_message']['epost_color'],
     'exclude'          => true,
     'inputType'        => 'radio',
     'options_callback' => function () {
         return DeliveryOptions::getOptionsForColor();
     },
-    'reference'        => &$GLOBALS['TL_LANG'][$table]['epost_colors'],
+    'reference'        => &$GLOBALS['TL_LANG']['tl_nc_message']['epost_colors'],
     'default'          => DeliveryOptions::OPTION_COLOR_GRAYSCALE,
     'eval'             => [
         'mandatory' => true,
@@ -110,18 +109,18 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_color'] = [
     'sql'              => "varchar(64) NOT NULL default ''",
 ];
 
-$GLOBALS['TL_DCA'][$table]['fields']['epost_price_information'] = [
-    'label'   => &$GLOBALS['TL_LANG'][$table]['epost_price_information'],
+$GLOBALS['TL_DCA']['tl_nc_message']['fields']['epost_price_information'] = [
+    'label'   => &$GLOBALS['TL_LANG']['tl_nc_message']['epost_price_information'],
     'exclude' => true,
-//    'inputType' => 'justexplanation',
-//	'options_callback' => function ()
-//	{
-//		return DeliveryOptions::getOptionsForColor();
-//	},
-//	'default' => DeliveryOptions::OPTION_COLOR_GRAYSCALE,
+    //    'inputType' => 'justexplanation',
+    //	'options_callback' => function ()
+    //	{
+    //		return DeliveryOptions::getOptionsForColor();
+    //	},
+    //	'default' => DeliveryOptions::OPTION_COLOR_GRAYSCALE,
     'eval'    => [
         'tl_class' => 'clr',
-        'content'  => EPostHelper::queryPriceInformationForDca(),
+        'content'  => 'test',
     ],
-//	'sql'              => "varchar(64) NOT NULL default ''"
+    //	'sql'              => "varchar(64) NOT NULL default ''"
 ];

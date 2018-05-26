@@ -1,16 +1,20 @@
 <?php
+
 /**
- * Clockwork SMS gateway for the notification_center extension for Contao Open Source CMS
+ * This file is part of richardhj/contao-epost-nc.
  *
- * Copyright (c) 2016 Richard Henkenjohann
+ * Copyright (c) 2015-2018 Richard Henkenjohann
  *
- * @package NotificationCenterClockworkSMS
- * @author  Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @package   richardhj/contao-epost-nc
+ * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @copyright 2015-2018 Richard Henkenjohann
+ * @license   https://github.com/richardhj/contao-epost-nc/blob/master/LICENSE
  */
-use EPost\Api\Metadata\DeliveryOptions;
-use EPost\Api\Metadata\Envelope;
+
 use NotificationCenter\Model\Language;
 use NotificationCenter\Model\Message;
+use Richardhj\EPost\Api\Metadata\DeliveryOptions;
+use Richardhj\EPost\Api\Metadata\Envelope;
 
 
 /** @noinspection PhpUndefinedMethodInspection */
@@ -129,7 +133,7 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_recipient_fields'] = [
         'rgxp'         => 'nc_tokens',
         'tl_class'     => 'clr',
     ],
-    'sql'       => "text NULL",
+    'sql'       => 'text NULL',
 ];
 
 $GLOBALS['TL_DCA'][$table]['fields']['epost_letter_type'] = [
@@ -145,7 +149,6 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_letter_type'] = [
     ],
     'load_callback'    => [
         function ($value, \DataContainer $dc) {
-            /** @noinspection PhpUndefinedMethodInspection */
             $message = Message::findBy(
                 [sprintf('id=(SELECT id FROM %s WHERE pid=?)', Language::getTable())],
                 [$dc->id]
@@ -180,7 +183,7 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_subject'] = [
         'rgxp'     => 'nc_tokens',
         'tl_class' => 'clr long',
     ],
-    'sql'       => "text NULL",
+    'sql'       => 'text NULL',
 ];
 
 $GLOBALS['TL_DCA'][$table]['fields']['epost_cover_letter'] = [
@@ -195,5 +198,5 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_cover_letter'] = [
         'allowHtml'      => true,
         'mandatory'      => true,
     ],
-    'sql'       => "text NULL",
+    'sql'       => 'text NULL',
 ];

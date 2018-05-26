@@ -1,27 +1,33 @@
 <?php
+
 /**
- * Clockwork SMS gateway for the notification_center extension for Contao Open Source CMS
+ * This file is part of richardhj/contao-epost-nc.
  *
- * Copyright (c) 2016 Richard Henkenjohann
+ * Copyright (c) 2015-2018 Richard Henkenjohann
  *
- * @package NotificationCenterClockworkSMS
- * @author  Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @package   richardhj/contao-epost-nc
+ * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @copyright 2015-2018 Richard Henkenjohann
+ * @license   https://github.com/richardhj/contao-epost-nc/blob/master/LICENSE
  */
 
-namespace NotificationCenter\Gateway;
+namespace Richardhj\ContaoEPostNotificationCenterBundle\Gateway;
 
-use EPost\Api\Letter;
-use EPost\Api\Metadata\DeliveryOptions;
-use EPost\Api\Metadata\Envelope;
-use EPost\Model\User;
+use Contao\System;
 use GuzzleHttp\Exception\ClientException;
-use NotificationCenter\MessageDraft\EPostMessageDraft;
+use NotificationCenter\Gateway\Base;
+use NotificationCenter\Gateway\GatewayInterface;
 use NotificationCenter\MessageDraft\MessageDraftFactoryInterface;
 use NotificationCenter\MessageDraft\MessageDraftInterface;
 use NotificationCenter\Model\Gateway;
 use NotificationCenter\Model\Language;
 use NotificationCenter\Model\Message;
 use NotificationCenter\Model\QueuedMessage;
+use Richardhj\ContaoEPostCoreBundle\Model\User;
+use Richardhj\ContaoEPostNotificationCenterBundle\MessageDraft\EPostMessageDraft;
+use Richardhj\EPost\Api\Letter;
+use Richardhj\EPost\Api\Metadata\DeliveryOptions;
+use Richardhj\EPost\Api\Metadata\Envelope;
 
 
 /**
@@ -37,28 +43,27 @@ class EPost extends Base implements GatewayInterface, MessageDraftFactoryInterfa
      */
     protected $objModel;
 
-
     /**
      * Returns a MessageDraft
      *
-     * @param   Message|\Model $objMessage
-     * @param   array          $arrTokens
-     * @param   string         $strLanguage
+     * @param   Message|\Model $message
+     * @param   array          $tokens
+     * @param   string         $language
      *
      * @return  MessageDraftInterface|null (if no draft could be found)
      */
-    public function createDraft(Message $objMessage, array $arrTokens, $strLanguage = '')
+    public function createDraft(Message $message, array $tokens, $language = ''): ?MessageDraftInterface
     {
-        if ('' === $strLanguage) {
-            $strLanguage = $GLOBALS['TL_LANGUAGE'];
+        if ('' === $language) {
+            $language = $GLOBALS['TL_LANGUAGE'];
         }
 
-        if (null === ($objLanguage = Language::findByMessageAndLanguageOrFallback($objMessage, $strLanguage))) {
-            \System::log(
+        if (null === ($languageModel = Language::findByMessageAndLanguageOrFallback($message, $language))) {
+            System::log(
                 sprintf(
                     'Could not find matching language or fallback for message ID "%s" and language "%s".',
-                    $objMessage->id,
-                    $strLanguage
+                    $message->id,
+                    $language
                 ),
                 __METHOD__,
                 TL_ERROR
@@ -67,7 +72,7 @@ class EPost extends Base implements GatewayInterface, MessageDraftFactoryInterfa
             return null;
         }
 
-        return new EPostMessageDraft($objMessage, $objLanguage, $arrTokens);
+        return new EPostMessageDraft($message, $languageModel, $tokens);
     }
 
 
@@ -79,8 +84,9 @@ class EPost extends Base implements GatewayInterface, MessageDraftFactoryInterfa
      * @param   string         $strLanguage
      *
      * @return  bool
+     * @throws \Exception
      */
-    public function send(Message $objMessage, array $arrTokens, $strLanguage = '')
+    public function send(Message $objMessage, array $arrTokens, $strLanguage = ''): bool
     {
 //		if ($this->objModel->clockwork_api_key == '')
 //		{
@@ -90,7 +96,6 @@ class EPost extends Base implements GatewayInterface, MessageDraftFactoryInterfa
 //		}
 
         /** @var User $user */
-        /** @noinspection PhpUndefinedMethodInspection */
         $user = $this->getModel()->getRelated('epost_user');
 
         // Authenticate
