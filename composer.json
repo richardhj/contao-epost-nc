@@ -17,7 +17,7 @@
     "php": "^7.1",
     "richardhj/contao-epost-core": "^1.0@alpha",
     "contao/core-bundle": "^4.4",
-    "discordier/justtextwidgets": "~1.0",
+    "discordier/justtextwidgets": "^1.1",
     "contao/manager-plugin": "^2.2",
     "symfony/http-kernel": "^3.3 || ^4.0",
     "richardhj/epost-api": "^0.10@alpha",

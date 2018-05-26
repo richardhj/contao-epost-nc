@@ -17,14 +17,10 @@ use Richardhj\EPost\Api\Metadata\DeliveryOptions;
 use Richardhj\EPost\Api\Metadata\Envelope;
 
 
-/** @noinspection PhpUndefinedMethodInspection */
-$table = Language::getTable();
-
-
 /**
  * MetaPalettes
  */
-$GLOBALS['TL_DCA'][$table]['metapalettes']['epost'] = [
+$GLOBALS['TL_DCA']['tl_nc_language']['metapalettes']['epost'] = [
     'general'     => [
         'language',
         'fallback',
@@ -46,7 +42,7 @@ $GLOBALS['TL_DCA'][$table]['metapalettes']['epost'] = [
 /**
  * MetaSubSelectPalettes
  */
-$GLOBALS['TL_DCA'][$table]['metasubselectpalettes'] = [
+$GLOBALS['TL_DCA']['tl_nc_language']['metasubselectpalettes'] = [
     'epost_letter_type'       => [
         Envelope::LETTER_TYPE_NORMAL => [],
         Envelope::LETTER_TYPE_HYBRID => [
@@ -67,11 +63,11 @@ $GLOBALS['TL_DCA'][$table]['metasubselectpalettes'] = [
 /**
  * Fields
  */
-$GLOBALS['TL_DCA'][$table]['fields']['epost_explanation'] = [
-    'label'   => &$GLOBALS['TL_LANG'][$table]['epost_explanation'],
-    'exclude' => true,
-//    'inputType' => 'justexplanation',
-    'eval'    => [
+$GLOBALS['TL_DCA']['tl_nc_language']['fields']['epost_explanation'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_nc_language']['epost_explanation'],
+    'exclude'   => true,
+    'inputType' => 'justexplanation',
+    'eval'      => [
         'content' => <<<'HTML'
 <ul>
     <li>Es muss mindestens ein Anhang verwendet werden:
@@ -94,20 +90,35 @@ HTML
     ],
 ];
 
-$GLOBALS['TL_DCA'][$table]['fields']['epost_recipient_fields'] = [
-    'label'     => &$GLOBALS['TL_LANG'][$table]['epost_recipient_fields'],
+$GLOBALS['TL_DCA']['tl_nc_language']['fields']['epost_recipient_fields'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_nc_language']['epost_recipient_fields'],
     'exclude'   => true,
     'inputType' => 'multiColumnWizard',
     'eval'      => [
         'columnFields' => [
             'recipient_field' => [
-                'label'            => &$GLOBALS['TL_LANG'][$table]['epost_recipient_field'],
+                'label'            => &$GLOBALS['TL_LANG']['tl_nc_language']['epost_recipient_field'],
                 'exclude'          => true,
                 'inputType'        => 'select',
                 'options_callback' => function () {
                     return [
-                        Envelope::LETTER_TYPE_NORMAL => Envelope\Recipient\Normal::getConfigurableFields(),
-                        Envelope::LETTER_TYPE_HYBRID => Envelope\Recipient\Hybrid::getConfigurableFields(),
+                        Envelope::LETTER_TYPE_NORMAL => [
+                            'displayName',
+                            'epostAddress',
+                        ],
+                        Envelope::LETTER_TYPE_HYBRID => [
+                            'company',
+                            'salutation',
+                            'title',
+                            'firstName',
+                            'lastName',
+                            'streetName',
+                            'houseNumber',
+                            'addressAddOn',
+                            'postOfficeBox',
+                            'zipCode',
+                            'city',
+                        ],
                     ];
                 },
                 'reference'        => array_merge(
@@ -121,12 +132,12 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_recipient_fields'] = [
                 ],
             ],
             'recipient_value' => [
-                'label'     => &$GLOBALS['TL_LANG'][$table]['epost_recipient_value'],
+                'label'     => &$GLOBALS['TL_LANG']['tl_nc_language']['epost_recipient_value'],
                 'exclude'   => true,
                 'inputType' => 'text',
                 'eval'      => [
 //                    'rgxp'           => 'nc_tokens',
-                    'decodeEntities' => true,
+'decodeEntities' => true,
                 ],
             ],
         ],
@@ -136,8 +147,8 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_recipient_fields'] = [
     'sql'       => 'text NULL',
 ];
 
-$GLOBALS['TL_DCA'][$table]['fields']['epost_letter_type'] = [
-    'label'            => &$GLOBALS['TL_LANG'][$table]['epost_letter_type'],
+$GLOBALS['TL_DCA']['tl_nc_language']['fields']['epost_letter_type'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_nc_language']['epost_letter_type'],
     'exclude'          => true,
     'inputType'        => 'justtextoption',
     'options_callback' => function () {
@@ -150,7 +161,7 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_letter_type'] = [
     'load_callback'    => [
         function ($value, \DataContainer $dc) {
             $message = Message::findBy(
-                [sprintf('id=(SELECT id FROM %s WHERE pid=?)', Language::getTable())],
+                ['id=(SELECT pid FROM tl_nc_language WHERE id=?)'],
                 [$dc->id]
             );
 
@@ -160,14 +171,14 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_letter_type'] = [
     'sql'              => "varchar(64) NOT NULL default ''", // DO NOT REMOVE field from database
 ];
 
-$GLOBALS['TL_DCA'][$table]['fields']['epost_cover_letter_mode'] = [
-    'label'            => &$GLOBALS['TL_LANG'][$table]['epost_cover_letter_mode'],
+$GLOBALS['TL_DCA']['tl_nc_language']['fields']['epost_cover_letter_mode'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_nc_language']['epost_cover_letter_mode'],
     'exclude'          => true,
     'inputType'        => 'radio',
     'options_callback' => function () {
         return DeliveryOptions::getOptionsForCoverLetter();
     },
-    'reference'        => &$GLOBALS['TL_LANG'][$table]['epost_cover_letter_modes'],
+    'reference'        => &$GLOBALS['TL_LANG']['tl_nc_language']['epost_cover_letter_modes'],
     'eval'             => [
         'tl_class'       => 'w50',
         'submitOnChange' => true,
@@ -175,8 +186,8 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_cover_letter_mode'] = [
     'sql'              => "char(64) NOT NULL default ''",
 ];
 
-$GLOBALS['TL_DCA'][$table]['fields']['epost_subject'] = [
-    'label'     => &$GLOBALS['TL_LANG'][$table]['epost_subject'],
+$GLOBALS['TL_DCA']['tl_nc_language']['fields']['epost_subject'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_nc_language']['epost_subject'],
     'exclude'   => true,
     'inputType' => 'text',
     'eval'      => [
@@ -186,14 +197,14 @@ $GLOBALS['TL_DCA'][$table]['fields']['epost_subject'] = [
     'sql'       => 'text NULL',
 ];
 
-$GLOBALS['TL_DCA'][$table]['fields']['epost_cover_letter'] = [
-    'label'     => &$GLOBALS['TL_LANG'][$table]['epost_cover_letter'],
+$GLOBALS['TL_DCA']['tl_nc_language']['fields']['epost_cover_letter'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_nc_language']['epost_cover_letter'],
     'exclude'   => true,
     'inputType' => 'textarea',
     'eval'      => [
         'rgxp'           => 'nc_tokens',
         'tl_class'       => 'clr',
-        'rte'            => 'tinyEPost',
+        'rte'            => 'tinyMCE',
         'decodeEntities' => true,
         'allowHtml'      => true,
         'mandatory'      => true,

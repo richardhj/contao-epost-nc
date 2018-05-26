@@ -40,21 +40,13 @@ $GLOBALS['TL_DCA']['tl_nc_message']['metapalettes']['epost'] = [
  * MetaSubSelectPalettes
  */
 $GLOBALS['TL_DCA']['tl_nc_message']['metasubselectpalettes'] = [
-    'epost_letter_type'       => [
+    'epost_letter_type' => [
         Envelope::LETTER_TYPE_NORMAL => [],
         Envelope::LETTER_TYPE_HYBRID => [
             'epost_color',
             'epost_registered',
         ],
     ],
-    'epost_cover_letter_mode' =>
-        [
-            DeliveryOptions::OPTION_COVER_LETTER_INCLUDED => [],
-            DeliveryOptions::OPTION_COVER_LETTER_GENERATE => [
-                'epost_subject',
-                'epost_cover_letter',
-            ],
-        ],
 ];
 
 
